@@ -38,7 +38,10 @@ class PositionalEncoding(nn.Module):
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        pos = torch.arange(0, max_len).reshape(-1, 1)
+        t_val = torch.pow(torch.tensor([1e-4]), torch.arange(0, embed_dim, 2)/embed_dim)
+        pe[:, :, 0::2] = torch.sin(pos * t_val)
+        pe[:, :, 1::2] = torch.cos(pos * t_val)
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         ############################################################################
@@ -70,7 +73,8 @@ class PositionalEncoding(nn.Module):
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        output = x + self.pe[:, :S, :]
+        output = self.dropout(output)
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         ############################################################################
@@ -164,8 +168,17 @@ class MultiHeadAttention(nn.Module):
         #     function masked_fill may come in handy.                              #
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-        pass
+        q_mat = self.query(query).reshape(N, S, self.n_head, E//self.n_head).transpose(1,2) #N, H, S, E/H
+        k_mat = self.key(key).reshape(N, T, self.n_head, E//self.n_head).transpose(1,2) #N, H, T, E/H
+        v_mat = self.value(value).reshape(N, T, self.n_head, E//self.n_head).transpose(1,2) #N, H,T, E/H
+        e_mat = torch.matmul(q_mat, k_mat.transpose(2,3)) / math.sqrt(E / self.n_head) #N, H, S, T
+        if attn_mask is not None:
+            e_mat = e_mat.masked_fill(attn_mask == 0, -float('inf'))
+        a_mat = F.softmax(e_mat, -1)
+        output = self.attn_drop(a_mat)
+        output = torch.matmul(output, v_mat) #N, H, S, E/H
+        output = output.transpose(1, 2).reshape(N, S, -1)  #N, S, D
+        output = self.proj(output)
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         ############################################################################
