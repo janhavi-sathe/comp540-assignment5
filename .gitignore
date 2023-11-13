@@ -150,3 +150,14 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+comp540/datasets/imagenet_val_25.npz
+comp540/datasets/coco_captioning/coco2014_captions.h5
+comp540/datasets/coco_captioning/coco2014_vocab.json
+comp540/datasets/coco_captioning/train2014_images.txt
+comp540/datasets/coco_captioning/train2014_urls.txt
+comp540/datasets/coco_captioning/train2014_vgg16_fc7_pca.h5
+comp540/datasets/coco_captioning/train2014_vgg16_fc7.h5
+comp540/datasets/coco_captioning/val2014_images.txt
+comp540/datasets/coco_captioning/val2014_urls.txt
+comp540/datasets/coco_captioning/val2014_vgg16_fc7_pca.h5
+comp540/datasets/coco_captioning/val2014_vgg16_fc7.h5

@@ -288,7 +288,7 @@ def word_embedding_backward(dout, cache):
 
     x, W = cache
 
-    dW = np.zeros(W)
+    dW = np.zeros(W.shape)
 
     np.add.at(dW, x, dout)
 
